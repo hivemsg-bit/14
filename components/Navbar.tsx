@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X, BookOpen, User as UserIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { User } from '../types';
 
 interface NavbarProps {
@@ -11,9 +12,23 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ user, onLogin, onLogout, onNavigate }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleNav = (page: string) => {
+    // Handle routing
+    if (page === 'home') navigate('/');
+    if (page === 'tests') navigate('/'); 
+    if (page === 'pricing') navigate('/');
+    if (page === 'dashboard') navigate('/dashboard');
+
+    // Call parent handler
     onNavigate(page);
+    setIsMenuOpen(false);
+  };
+
+  const handleLogoutClick = () => {
+    onLogout();
+    navigate('/');
     setIsMenuOpen(false);
   };
 
@@ -37,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogin, onLogout, onNavigate }) 
                 <button onClick={() => handleNav('dashboard')} className="text-blue-600 font-semibold hover:bg-blue-50 px-3 py-2 rounded-md">
                   Dashboard
                 </button>
-                <button onClick={onLogout} className="text-gray-500 hover:text-red-600 text-sm">Logout</button>
+                <button onClick={handleLogoutClick} className="text-gray-500 hover:text-red-600 text-sm">Logout</button>
                 <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold">
                   {user.name.charAt(0)}
                 </div>
@@ -74,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogin, onLogout, onNavigate }) 
             {user ? (
               <>
                 <button onClick={() => handleNav('dashboard')} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-blue-600 bg-blue-50">Dashboard</button>
-                <button onClick={onLogout} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">Logout</button>
+                <button onClick={handleLogoutClick} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">Logout</button>
               </>
             ) : (
               <button onClick={() => { onLogin(); setIsMenuOpen(false); }} className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 mt-4">Login</button>
